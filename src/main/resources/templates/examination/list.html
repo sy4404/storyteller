@@ -1,0 +1,31 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/include/head.html :: fragment-head}"></head>
+<link th:href="@{/css/ebook/list.css}" rel="stylesheet" type="text/css" />
+<body>
+<div class="mainPageBody pb-4">
+    <div class="header">
+        <div>
+            <img th:src="@{/img/icon_back-bt@2x.png}" class="headerBackBtn" alt="화살표" onclick="history.back()">
+        </div>
+        <h1>모의고사</h1>
+    </div>
+    <div class="contentWrap">
+        <h2>이순신 교육 모의고사</h2>
+    </div>
+    <div class="py-20">
+        <div class="ebookBeforeBox" th:each="item ,list : ${lists}" th:onclick="|location.href='/examination/ex/${item.examinationChapterIdx}'|">
+            <div class="d-flex justify-content-between">
+                <div class="ebookTextWrap">
+                    <h3 th:text="${item.name}">이순신 교육 1강 모의고사</h3>
+                </div>
+                <div>
+                    <img th:src="@{/img/icon_go@2x.png}" class="ebooKListDetailImg" alt="화살표">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luxury.storyteller.mapper.ExaminationMapper">
+
+    <select id="findExaminationChapterAll" resultType="com.luxury.storyteller.dto.ExaminationDto">
+        SELECT * FROM examination_chapter;
+    </select>
+
+    <!--과목 목록(대분류)-->
+    <select id="findExaminationMajorAll" resultType="com.luxury.storyteller.dto.ExaminationDto">
+        SELECT * FROM examination_major;
+    </select>
+
+    <!--과목 상세-->
+    <select id="findExaminationMajorByexaminationMajorIdx" parameterType="int" resultType="com.luxury.storyteller.dto.ExaminationDto">
+        SELECT * FROM examination_major WHERE examination_major_idx = #{examinationMajorIdx};
+    </select>
+
+    <!-- 과목 수정 -->
+    <update id="modifyExaminationMajor" parameterType="com.luxury.storyteller.dto.ExaminationDto">
+        UPDATE examination_major
+            SET examination_major_title = #{examinationMajorTitle}
+        WHERE examination_major_idx = #{examinationMajorIdx}
+    </update>
+
+    <!--과목의 챕터(중분류)-->
+    <select id="findExaminationChapterByExaminationMajorIdx" parameterType="int" resultType="com.luxury.storyteller.dto.ExaminationDto">
+        SELECT * FROM examination_chapter where examination_major_idx = #{examinationMajorIdx};
+    </select>
+
+    <!--챕터 상세-->
+    <select id="findExaminationChapterByExaminationChapterIdx" parameterType="int" resultType="com.luxury.storyteller.dto.ExaminationDto">
+        SELECT * FROM examination_chapter where examination_chapter_idx = #{examinationChapterIdx};
+    </select>
+
+    <!-- 챕터 수정 -->
+    <update id="modifyExaminationChapter" parameterType="com.luxury.storyteller.dto.ExaminationDto">
+        UPDATE examination_chapter
+            SET name = #{name}
+        WHERE examination_chapter_idx = #{examinationChapterIdx}
+    </update>
+
+    <!--챕터의 번호별 문제-->
+    <select id="findExaminationSelectByChapter" parameterType="com.luxury.storyteller.dto.ExaminationDto" resultType="com.luxury.storyteller.dto.ExaminationDto">
+        SELECT *
+        FROM
+            examination_chapter AS chapter
+            LEFT JOIN examination AS ex ON ex.examination_chapter_idx = chapter.examination_chapter_idx
+            LEFT JOIN examination_select AS sel ON sel.examination_idx = ex.examination_idx
+        WHERE chapter.examination_chapter_idx = 1 AND sel.examination_idx = 1
+        ORDER BY ex.examination_idx, sel.examination_select_num
+    </select>
+
+    <!--챕터 모든 문제-->
+    <select id="findExaminationByChapter" parameterType="int" resultType="com.luxury.storyteller.dto.ExaminationDto">
+        SELECT *
+            , ROW_NUMBER() OVER () AS question_number
+        FROM luxury_storyteller.examination
+        WHERE examination_chapter_idx = #{examinationChapterIdx};
+    </select>
+
+    <!--과목 등록-->
+    <insert id="createExaminationMajor" parameterType="com.luxury.storyteller.dto.ExaminationDto">
+        INSERT INTO examination_major (
+            examination_major_title
+        ) VALUES (
+            #{examinationMajorTitle}
+        )
+    </insert>
+
+    <!--챕터 등록-->
+    <insert id="createExaminationChapter" parameterType="com.luxury.storyteller.dto.ExaminationDto">
+        INSERT INTO examination_chapter (
+            examination_major_idx, name
+        ) VALUES (
+            #{examinationMajorIdx}, #{name}
+        )
+    </insert>
+
+    <!--문제 등록-->
+    <insert id="createExamination" parameterType="com.luxury.storyteller.dto.ExaminationDto">
+        <selectKey keyProperty="examinationIdx" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO examination (
+            examination_chapter_idx, question, answer
+        ) VALUES (
+            #{examinationChapterIdx}, #{question}, #{answer}
+        )
+    </insert>
+
+    <!--문제 항목 등록-->
+    <insert id="createExaminationSelect" parameterType="com.luxury.storyteller.dto.ExaminationDto">
+        INSERT INTO examination_select (
+            examination_idx, examination_select_num, examination_select_title
+        ) VALUES (
+            #{examinationIdx}, #{examinationSelectNum}, #{examinationSelectTitle}
+        )
+    </insert>
+
+    <!--문제 상세-->
+    <select id="findExaminationByExaminationIdx" parameterType="int" resultType="com.luxury.storyteller.dto.ExaminationDto">
+        SELECT * FROM luxury_storyteller.examination WHERE examination_idx = #{examinationIdx};
+    </select>
+
+    <!--문제 상세(항목)-->
+    <select id="findexaminationSelectByExaminationIdx" parameterType="int" resultType="com.luxury.storyteller.dto.ExaminationDto">
+        SELECT * FROM luxury_storyteller.examination_select where examination_idx = #{examinationIdx}
+    </select>
+
+    <!--항목 삭제-->
+    <delete id="deleteExaminationSelectByExaminationIdx" parameterType="int" >
+        DELETE FROM examination_select WHERE examination_idx = #{examinationIdx}
+    </delete>
+
+    <!-- 문제 수정 -->
+    <update id="modifyExamination" parameterType="com.luxury.storyteller.dto.ExaminationDto">
+        UPDATE examination
+        SET question = #{question}
+            , answer = #{answer}
+        WHERE examination_idx = #{examinationIdx}
+    </update>
+
+
+
+    <!--문제 상세(항목)-->
+    <select id="findexaminationSelectByexaminationChapterIdx" parameterType="int" resultType="com.luxury.storyteller.dto.ExaminationDto">
+        SELECT * FROM luxury_storyteller.examination_chapter
+        left join examination on examination_chapter.examination_chapter_idx = examination.examination_chapter_idx
+        left join examination_select on examination.examination_idx = examination_select.examination_idx
+        where examination_chapter.examination_chapter_idx = ${examinationChapterIdx}
+        order by examination.examination_idx, examination_select.examination_select_num
+    </select>
+
+
+    <insert id="createExaminationResult" parameterType="com.luxury.storyteller.dto.ExaminationDto">
+        INSERT INTO user_examination_result (
+            examination_idx, user_idx, score
+        ) VALUES (
+            #{examinationIdx}, #{userIdx}, #{score}
+        )
+    </insert>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luxury.storyteller.mapper.CommunityMapper">
+
+
+    <select id="findCommunityListAll" resultType="com.luxury.storyteller.dto.CommunityDto">
+        SELECT * FROM community WHERE deleted = 0 AND division = 0 ORDER BY created_at DESC;
+    </select>
+
+    <select id="findCommunityByCommunityIdx" parameterType="int" resultType="com.luxury.storyteller.dto.CommunityDto">
+        SELECT * FROM community WHERE community_idx = #{communityIdx} AND deleted = 0;
+    </select>
+
+    <insert id="createCommunity" parameterType="com.luxury.storyteller.dto.CommunityDto">
+        INSERT INTO community (
+            title, content, user_idx
+        ) VALUES (
+            #{title}, #{content}, #{userIdx}
+        )
+    </insert>
+
+    <update id="modifyCommunity" parameterType="com.luxury.storyteller.dto.CommunityDto">
+        UPDATE
+            community
+        SET
+            title = #{title},
+            content = #{content}
+        WHERE
+            community_idx = #{communityIdx}
+    </update>
+
+    <update id="deleteCommunity" parameterType="int">
+        UPDATE
+            community
+        SET
+            deleted = 1
+        WHERE
+            communityIdx = #{communityIdx}
+    </update>
+
+    <select id="lastCommunity" resultType="com.luxury.storyteller.dto.CommunityDto">
+        SELECT * FROM community WHERE deleted = 0 AND division = 0 ORDER BY created_at DESC LIMIT 1;
+    </select>
+
+    <select id="findCommunityQnAListAll" resultType="com.luxury.storyteller.dto.CommunityDto">
+        SELECT * FROM community WHERE deleted = 0 AND division = 1 ORDER BY created_at DESC;
+    </select>
+
+    <select id="findCommunityCommentByCommunityIdx" resultType="com.luxury.storyteller.dto.CommentDto"  parameterType="int">
+        SELECT * FROM
+            community_comment
+        LEFT JOIN community
+            ON community_comment.community_idx = community.community_idx
+        LEFT JOIN user
+            ON community_comment.user_idx = user.user_idx
+        WHERE community_comment.community_idx = #{communityIdx}
+            AND community_comment.deleted = 0
+        ORDER BY community_comment.created_at DESC
+    </select>
+</mapper>

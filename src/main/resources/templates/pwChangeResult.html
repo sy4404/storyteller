@@ -1,0 +1,57 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/include/head.html :: fragment-head}"></head>
+<link th:href="@{/css/idInquiry.css}" rel="stylesheet" type="text/css" />
+<body>
+<div class="mainPageBody">
+    <div class="header">
+        <div>
+            <img th:src="@{/img/icon_back-bt@2x.png}" class="headerBackBtn" alt="화살표" onclick="history.back()">
+        </div>
+        <h1>아이디·비밀번호 찾기</h1>
+    </div>
+
+    <div class="formWrap mt-3">
+            <div class="resultImgWrap">
+                <img th:src="@{/img/img_pw-found@2x.png}" class="resultImg" alt="돋보기">
+            </div>
+            <p class="idResultText">비밀번호를 변경하였습니다!</p>
+            <input type="button" class="submitBtn mt-5" value="로그인 하러 가기" onclick="location.href='/login'">
+    </div>
+</div>
+</body>
+<script>
+    function checks(){
+
+        var idPattern = /^[a-zA-Z0-9]+$/;
+        var passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,20}$/;
+
+
+        if($("#pw").val() == ""){
+            alert("비밀번호를 입력해주세요.");
+            $("#pw").focus();
+            return false;
+        }
+
+        if (!passwordPattern.test($("#pw").val())) {
+            alert("비밀번호는 숫자, 영문, 특수문자 조합 최소 8자~20자로 입력해주세요.");
+            $("#pw").focus();
+            return false;
+        }
+
+        if($("#pw2").val() == ""){
+            alert("비밀번호 확인을 입력해주세요.");
+            $("#pw2").focus();
+            return false;
+        }
+
+        if($("#pw").val() != $("#pw2").val()){
+            alert("비밀번호가 다릅니다. 확인해 주세요.");
+            $("#pw2").focus();
+            return false;
+        }
+
+
+        return true;
+    }
+</script>
+</html>

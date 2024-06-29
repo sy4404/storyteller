@@ -1,0 +1,120 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/include/head.html :: fragment-head}"></head>
+<link th:href="@{/css/user/info.css}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+    .profile-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 24px 0px 33px 0px;
+    }
+    .profile-wrapper {
+        position: relative;
+        width: 123px;
+        height: 123px;
+        border-radius: 50%;
+        overflow: visible;
+        cursor: pointer;
+        border: 2px solid #ddd;
+    }
+    .profile-wrapper #profileImage {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+    .profile-wrapper input {
+        display: none;
+    }
+    .edit-icon {
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        background-color: white;
+        border-radius: 50%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+</style>
+<body>
+<div class="mainPageBody pb-4">
+    <div class="header">
+        <div>
+            <img th:src="@{/img/icon_back-bt@2x.png}" class="headerBackBtn" alt="화살표" onclick="history.back()">
+        </div>
+        <h1>개인 정보 수정</h1>
+    </div>
+    <div class="contentWrap">
+        <h2 style="font-size: 18px;">비밀번호 변경</h2>
+    </div>
+    <div class="formWrap">
+        <form action="/user/pwdEdit" method="POST" onsubmit="return checks()">
+
+            <label class="mt-3" for="pw">비밀번호*</label><br>
+            <input type="password" class="" id="pw" name="password" placeholder="숫자, 영문, 특수문자 조합 최소 8자~20자">
+
+            <label class="mt-3" for="pw2">비밀번호 확인*</label><br>
+            <input type="password" class="" id="pw2" name="" placeholder="비밀번호 재입력">
+
+            <input type="hidden" th:value="${detail.userIdx}" name="userIdx">
+            <input type="submit" class="submitBtn" value="정보수정">
+        </form>
+    </div>
+</div>
+<script>
+    function checks(){
+
+        var passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,20}$/;
+
+        if(confirm("비밀번호를 변경하시겠습니까?")){
+            if($("#pw").val() == ""){
+                alert("비밀번호를 입력해주세요.");
+                $("#pw").focus();
+                return false;
+            }
+
+            if (!passwordPattern.test($("#pw").val())) {
+                alert("비밀번호는 숫자, 영문, 특수문자 조합 최소 8자~20자로 입력해주세요.");
+                $("#pw").focus();
+                return false;
+            }
+
+            if($("#pw2").val() == ""){
+                alert("비밀번호 확인을 입력해주세요.");
+                $("#pw2").focus();
+                return false;
+            }
+            return true;
+        }else {
+            return false;
+        }
+
+
+
+    }
+</script>
+<script>
+    const profileWrapper = document.querySelector('.profile-wrapper');
+    const profileImage = document.getElementById('profileImage');
+    const fileInput = document.getElementById('fileInput');
+    const editIcon = document.querySelector('.edit-icon');
+
+    profileWrapper.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                profileImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+</body>
+</html>

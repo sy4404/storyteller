@@ -1,0 +1,78 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/include/head.html :: fragment-head}"></head>
+<link th:href="@{/css/score/list.css}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+
+<body>
+<div class="mainPageBody">
+    <div class="header">
+        <div>
+            <img th:src="@{/img/icon_back-bt@2x.png}" class="headerBackBtn" alt="화살표" onclick="history.back()">
+        </div>
+        <h1>성적•출결 확인</h1>
+    </div>
+    <div class="py-20 mt-4">
+        <div class="idPwSearchBtnBox">
+            <div ><a href="/score">성적 확인</a></div>
+            <div class="active"><a href="/attendance">출결 확인</a></div>
+        </div>
+    </div>
+    <div class="scoreContentWrap py-20">
+        <h2>출결 현황</h2>
+        <div class="attBox">
+            <span th:onclick="'location.href=\''+ @{/attendance?type=before&date=} + @{${today}} + '-01\''" onmousedown="return false;">
+                ❮
+            </span>
+            <span th:text="${today}" style="font-size: 16px; font-weight: bold; margin: 0 10px" onmousedown="return false;"></span>
+            <span th:onclick="'location.href=\''+ @{/attendance?type=after&date=} + @{${today}} + '-01\''" onmousedown="return false;">
+                ❯
+            </span>
+        </div>
+    </div>
+
+    <div class="scoreContentWrap py-20 mt-2 pb-5">
+        <div class="attBox2">
+            <div class="d-flex attBoxWrap">
+                <div style="width: 40%;">날짜</div>
+                <div style="width: 40%">시간</div>
+                <div style="width: 20%">결과</div>
+            </div>
+            <div class="d-flex attBoxWrapContent" th:each="item ,list : ${lists}">
+                <div style="width: 40%;" th:text="${item.date}">2024-03-23</div>
+                <div style="width: 40%" th:text="${item.date2}">09:00:00</div>
+                <div style="width: 20%" th:switch="${item.result}">
+                    <span class="result1" th:case="null">-</span>
+                    <span class="result0" th:case="0">출석</span>
+                    <span class="result1" th:case="1">결석</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<!-- 나머지 스크립트들은 이후에 로드 -->
+<script th:src="@{vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{vendor/jquery-easing/jquery.easing.min.js}"></script>
+<script th:src="@{js/sb-admin-2.min.js}"></script>
+<script th:src="@{vendor/datatables/jquery.dataTables.min.js}"></script>
+<script th:src="@{vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+<script th:src="@{js/demo/datatables-demo.js}"></script>
+<!-- Datepicker 초기화 스크립트 -->
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $('#datepicker-icon').click(function() {
+            $('#datepicker').datepicker('show');
+        });
+
+        $('#datepicker').datepicker({
+            dateFormat: 'yy-mm-dd',
+            onSelect: function(dateText, inst) {
+                window.location.href = '/attendance?type=specific&date=' + dateText;
+            }
+        });
+    });
+</script>
+</html>

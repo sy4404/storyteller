@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/include/head.html :: fragment-head}"></head>
+<link th:href="@{/css/community/community.css}" rel="stylesheet" type="text/css" />
+<body>
+<div class="mainPageBody">
+    <div class="header">
+        <div>
+            <img th:src="@{/img/icon_back-bt@2x.png}" class="headerBackBtn" alt="화살표" onclick="history.back()">
+        </div>
+        <h1>커뮤니티</h1>
+    </div>
+    <div class="py-20 mt-2">
+        <div class="idPwSearchBtnBox">
+            <div class="active"><a href="/community/notice">공지사항</a></div>
+            <div><a href="/community/qna">Q&A</a></div>
+        </div>
+    </div>
+    <div class="contentWrap mt-4">
+        <h2>공지사항</h2>
+        <p>중요한 공지사항을 전달드려요.</p>
+    </div>
+
+    <div class="formWrap pb-5">
+        <input type="text" class="" id="name" name="name" placeholder="검색">
+
+        <div class="communityWrap" th:each="list : ${lists}" th:onclick="|location.href='/community/notice/${list.communityIdx}'|">
+            <!-- Iterate through list items -->
+                <div class="firstLineWrap">
+                    <p th:utext="'<span class=&quot;noticeLabel&quot;>공지</span>' + ${list.title}" class="ellipsis communityTitle">
+                        출석 오류에 관한 공지사항
+                    </p>
+                    <p class="communityDate" th:text="${#temporals.format(#temporals.createDate(list.createdAt, 'yyyy-MM-dd HH:mm:ss'), 'yyyy.MM.dd')}">2024.04.01</p>
+                </div>
+                <!-- Remove HTML tags from list content -->
+                <p class="lastLine" th:text="${list.content}">
+                </p>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.lastLine').each(function(){
+            var text = $(this).text();
+            var strippedText = text.replace(/(<([^>]+)>)/ig, '');
+            $(this).text(strippedText);
+        });
+    });
+</script>
+
+</body>
+</html>

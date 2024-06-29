@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luxury.storyteller.mapper.UserMapper">
+
+
+    <insert id="createUser" parameterType="com.luxury.storyteller.dto.UserDto">
+        INSERT INTO user (
+            id, password, name, phone_number
+        ) VALUES (
+            #{id}, #{password}, #{name}, #{phoneNumber}
+        )
+    </insert>
+
+<!--    <update id="modifyUser" parameterType="com.luxury.storyteller.dto.UserDto">-->
+<!--        UPDATE-->
+<!--            user-->
+<!--        SET-->
+<!--            password = #{password},-->
+<!--            phone_number = #{phoneNumber},-->
+<!--            profile_url = #{profileUrl}-->
+<!--        WHERE-->
+<!--            user_idx = #{userIdx}-->
+<!--    </update>-->
+
+    <update id="modifyUser" parameterType="com.luxury.storyteller.dto.UserDto">
+        UPDATE
+            user
+        SET
+            id = #{id}
+            , name = #{name}
+            , phone_number = #{phoneNumber}
+            <if test="profileUrl != 'null'">
+                , profile_url = #{profileUrl}
+            </if>
+        WHERE
+            user_idx = #{userIdx}
+    </update>
+
+    <update id="userModifyUser" parameterType="com.luxury.storyteller.dto.UserDto">
+        UPDATE
+            user
+        SET
+            phone_number = #{phoneNumber}
+            <if test="profileUrl != 'null'">
+                , profile_url = #{profileUrl}
+            </if>
+        WHERE
+            user_idx = #{userIdx}
+    </update>
+
+    <select id="findUserByUserIdx" parameterType="int" resultType="com.luxury.storyteller.dto.UserDto">
+        SELECT * FROM user WHERE user_idx = #{userIdx};
+    </select>
+
+    <select id="findUserByIdAndPhoneNumber" parameterType="com.luxury.storyteller.dto.UserDto" resultType="com.luxury.storyteller.dto.UserDto">
+        SELECT * FROM user WHERE name = #{name} AND phone_number = #{phoneNumber};
+    </select>
+
+    <select id="findUserById" parameterType="String" resultType="com.luxury.storyteller.dto.UserDto">
+        SELECT * FROM user WHERE id = #{id};
+    </select>
+
+    <select id="findByUserAll" resultType="com.luxury.storyteller.dto.UserDto">
+        SELECT * FROM user WHERE role = 'ROLE_USER' ORDER BY user_idx desc;
+    </select>
+
+    <select id="isDuplicateId" resultType="com.luxury.storyteller.dto.UserDto" parameterType="com.luxury.storyteller.dto.UserDto">
+        SELECT * FROM user WHERE id = #{id}
+    </select>
+<!--pwdModify-->
+
+    <update id="pwdModify" parameterType="com.luxury.storyteller.dto.UserDto">
+        UPDATE
+            user
+        SET
+            password = #{password}
+        WHERE
+            user_idx = #{userIdx}
+    </update>
+
+    <select id="findUserByIdAndPhoneNumbeAndName" parameterType="com.luxury.storyteller.dto.UserDto" resultType="com.luxury.storyteller.dto.UserDto">
+        SELECT * FROM user WHERE id = #{id} AND name = #{name} AND phone_number = #{phoneNumber};
+    </select>
+
+</mapper>
